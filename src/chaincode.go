@@ -44,13 +44,13 @@ type Donation struct {
 }
 
 type Request struct {
-	id string
-	name string
-	projectName string
-	description string
-	expectedMoney int
-	currentMoney int
-	donationList []string
+    id string
+    name string
+    projectName string
+    description string
+    expectedMoney int
+    currentMoney int
+    donationList []string
 }
 
 
@@ -230,7 +230,14 @@ func (t *SimpleChaincode) createDonation(stub *shim.ChaincodeStub, args []string
 // }
 
 func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
-     
+    fmt.Println("query is running " + function)
+    // Handle different functions
+    if function == "read" {                            //read a variable
+        return t.read(stub, args)
+    }
+    fmt.Println("query did not find func: " + function)
+
+    return nil, errors.New("Received unknown function query")
 	 // if function != "queryAll" {
 	 // 	requests, err := stub.GetState("allRequest")
   //       if err != nil {
@@ -244,4 +251,22 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
          //return requests, nil
 	 // }
      return nil, nil
+}
+
+func (t *SimpleChaincode) read(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+    var key, jsonResp string
+    var err error
+
+    if len(args) != 1 {
+        return nil, errors.New("Incorrect number of arguments. Expecting name of the key to query")
+    }
+
+    key = args[0]
+    valAsbytes, err := stub.GetState(key)
+    if err != nil {
+        jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
+        return nil, errors.New(jsonResp)
+    }
+
+    return valAsbytes, nil
 }
