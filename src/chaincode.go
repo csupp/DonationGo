@@ -25,10 +25,10 @@ package main
 import (
 	"errors"
     "encoding/json"
-	"fmt"
-	"strconv"
+    "fmt"
+    "strconv"
     "os/exec"
-	"github.com/hyperledger/fabric/core/chaincode/shim"
+    "github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
 // SimpleChaincode example simple Chaincode implementation
@@ -42,9 +42,8 @@ type Donation struct {
 	id string
 	who string
 	time string
-    rid string // donation to which request item
+    rid string
 	money int
-   // label = "Donation"
 }
 
 type Request struct {
@@ -55,16 +54,14 @@ type Request struct {
 	expectedMoney int
 	currentMoney int
 	donationList []string
-	//label = "Request"
 }
 
 
 type Person struct {
 	id string
 	name string
-    myRequests []string // this person's request ids
+    myRequests []string
     myDonations []string
-  //  label = "Person"
 }
 
 
