@@ -71,7 +71,7 @@ func main() {
     }
 }
 
-func(t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func(t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
     if len(args) != 1 {
         return nil, errors.New("Incorrect number of arguments. Expecting 1")
     }
@@ -84,7 +84,7 @@ func(t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string,
     return nil, nil
 }
 
-func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
    
      //1. create a donation
      if function == "createDonation" {
@@ -99,7 +99,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
      return nil, errors.New("Received unknown function invocation")
 }
 
-func (t *SimpleChaincode) createDonation(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode) createDonation(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
      //args: ["jack", "toRequestId", money] 
      var from, toRid string
      var money int
@@ -229,7 +229,7 @@ func (t *SimpleChaincode) createDonation(stub shim.ChaincodeStubInterface, args 
 //      stub.PutState("allRequest", requests)
 // }
 
-func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
      
 	 // if function != "queryAll" {
 	 // 	requests, err := stub.GetState("allRequest")
