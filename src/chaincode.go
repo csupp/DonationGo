@@ -35,9 +35,6 @@ import (
 type SimpleChaincode struct {
 }
 
-// const array length
-const arrLen = 100
-
 type Donation struct {
     id string
     who string
