@@ -39,11 +39,11 @@ type SimpleChaincode struct {
 const arrLen = 100
 
 type Donation struct {
-	id string
-	who string
-	time string
+    id string
+    who string
+    time string
     rid string
-	money int
+    money int
 }
 
 type Request struct {
@@ -58,8 +58,8 @@ type Request struct {
 
 
 type Person struct {
-	id string
-	name string
+    id string
+    name string
     myRequests []string
     myDonations []string
 }
