@@ -72,10 +72,16 @@ func main() {
 }
 
 func(t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-  
-    fmt.Println("Init DonationGo function")
-	// create accounts and put the state
-	return nil, nil
+    if len(args) != 1 {
+        return nil, errors.New("Incorrect number of arguments. Expecting 1")
+    }
+
+    err := stub.PutState("hello_world", []byte(args[0]))
+    if err != nil {
+        return nil, err
+    }
+
+    return nil, nil
 }
 
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
