@@ -27,8 +27,6 @@ import (
     "encoding/json"
     "fmt"
     "log"
-    "strconv"
-    "os/exec"
     "github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
