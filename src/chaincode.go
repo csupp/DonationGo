@@ -35,7 +35,7 @@ import (
 // SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
 }
-var prefix = "Dn:"
+
 type Donation struct {
     Id string `json:"id"`
     Who string `json:"who"`
@@ -112,69 +112,65 @@ func (t *SimpleChaincode) createDonation(stub *shim.ChaincodeStub, args []string
      from = args[0]
      toRid = args[1]
      money, err = strconv.Atoi(args[2])
-     log.Println(from)
-     log.Println(toRid)
-     log.Println(money)
      if err != nil {
         return nil, errors.New("money cannot convert to number")
      }
 
      var donation Donation
      donation = Donation{Id: "donationid", Rid: toRid, Who: from, Money: money}
-     
      djson, err := json.Marshal(&donation)
      if err != nil {
         return nil, err
      }
+     var a = donation.Id
+     stub.PutState(a, djson)
      
-     stub.PutState(prefix+donation.Id, djson)
      
      
-     
-     // var person Person
-     // var myReqs, myDons []string
-     // // update person data
-     // personByte, err := stub.GetState(from)
-     // if err != nil {
-     //    fmt.Println("No person value for " + from)
-     //    person = Person{Id: from, Name: from, MyRequests: myReqs, MyDonations: myDons}
-     //    pid2 := person.Id
-     //    pJson, err := json.Marshal(&person)
-     //    if err != nil {
-     //        return nil, errors.New("failed to JSON person instance")
-     //    }
-     //    stub.PutState(pid2, pJson)
-     // } else {
-     //    err = json.Unmarshal(personByte, &person)
-     //    if err != nil {
-     //        return nil, errors.New("failed to Unmarshal person instance")
-     //    }
-     // }
+     var person Person
+     var myReqs, myDons []string
+     // update person data
+     personByte, err := stub.GetState(from)
+     if err != nil {
+        fmt.Println("No person value for " + from)
+        person = Person{Id: from, Name: from, MyRequests: myReqs, MyDonations: myDons}
+        var pid2 = person.Id
+        pJson, err := json.Marshal(&person)
+        if err != nil {
+            return nil, errors.New("failed to JSON person instance")
+        }
+        stub.PutState(pid2, pJson)
+     } else {
+        err = json.Unmarshal(personByte, &person)
+        if err != nil {
+            return nil, errors.New("failed to Unmarshal person instance")
+        }
+     }
     
-    // myDonations := person.MyDonations
-    // if myDonations == nil {
-    //     myDonations = make([]string, 0)
-    // }
-    // myDonations = append(myDonations, donation.Id)
-    // person.MyDonations = myDonations
+    myDonations := person.MyDonations
+    if myDonations == nil {
+        myDonations = make([]string, 0)
+    }
+    myDonations = append(myDonations, donation.Id)
+    person.MyDonations = myDonations
     
-    // requestByte, err := stub.GetState(toRid)
-    // if err != nil {
-    //        return nil, errors.New("request did not exist")
-    // }
+    requestByte, err := stub.GetState(toRid)
+    if err != nil {
+           return nil, errors.New("request did not exist")
+    }
 
-    // var request Request
-    // err = json.Unmarshal(requestByte, &request)
-    // if err != nil {
-    //        return nil, errors.New("failed to Unmarshal request instance")
-    // }
-    // request.CurrentMoney += money
-    // donationList := request.DonationList 
-    // if donationList == nil {
-    //     donationList = make([]string, 0)
-    // }
-    // donationList = append(donationList, donation.Id)
-    // request.DonationList = donationList
+    var request Request
+    err = json.Unmarshal(requestByte, &request)
+    if err != nil {
+           return nil, errors.New("failed to Unmarshal request instance")
+    }
+    request.CurrentMoney += money
+    donationList := request.DonationList 
+    if donationList == nil {
+        donationList = make([]string, 0)
+    }
+    donationList = append(donationList, donation.Id)
+    request.DonationList = donationList
     return []byte("create donation has finished"), nil     
 }
 
