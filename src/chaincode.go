@@ -26,6 +26,7 @@ import (
     "errors"
     "encoding/json"
     "fmt"
+    "log"
     "strconv"
     "os/exec"
     "github.com/hyperledger/fabric/core/chaincode/shim"
@@ -36,29 +37,28 @@ type SimpleChaincode struct {
 }
 
 type Donation struct {
-    id string
-    who string
-    time string
-    rid string
-    money int
+    id string `json:"id"`
+    who string `json:"who"`
+    time string `json:"time"`
+    rid string  `json:"rid"`
+    money int   `json:"money"`
 }
 
 type Request struct {
-    id string
-    name string
-    projectName string
-    description string
-    expectedMoney int
-    currentMoney int
-    donationList []string
+    id string `json:"id"`
+    name string  `json:"name"`
+    description string `json:"description"`
+    expectedMoney int `json:"expectedMoney"`
+    currentMoney int  `json:"currentMoney"`
+    donationList []string `json:"donationList"`
 }
 
 
 type Person struct {
-    id string
-    name string
-    myRequests []string
-    myDonations []string
+    id string `json:"id"`
+    name string `json:"name"`
+    myRequests []string `json:"myRequests"`
+    myDonations []string `json:"myDonations"`
 }
 
 
@@ -81,6 +81,20 @@ func(t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []
         return nil, err
     }
 
+    //init some requests to test createDonation function
+    //requestid, err := exec.Command("uuidgen").Output()
+    // if err != nil {
+    //     return nil, err
+    // }
+    var request Request
+    var donationLts []string
+    request = Request{id: "rid", name: "Donation Go", description: "Wanna to go to University", expectedMoney: 10000, currentMoney: 0, donationList: donationLts}
+    rjson, err := json.Marshal(&request)
+    if err != nil {
+        return nil, err
+    }
+    stub.PutState("requestid", rjson)
+    log.Println("init function has done!")
     return nil, nil
 }
 
@@ -108,6 +122,9 @@ func (t *SimpleChaincode) createDonation(stub *shim.ChaincodeStub, args []string
     // var personByte []byte
      var err error
 
+     if len(args) != 3 {
+         return nil, errors.New("Incorrect number of arguments. Expecting 3")
+     }
      from = args[0]
      toRid = args[1]
      money, err = strconv.Atoi(args[2])
@@ -182,53 +199,6 @@ func (t *SimpleChaincode) createDonation(stub *shim.ChaincodeStub, args []string
     return nil, nil     
 }
 
-// func (t *SimpleChaincode) createDonationRequest(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-//      //args: [jack, projectName, description, expectedMoney]
-//      var name, projectName, description string
-//      var expectedMoney int
-//      name = args[0]
-//      projectName = args[1]
-//      description = args[2]
-//      expectedMoney =args[3]
-     
-//      //generate a unique id for request id
-//  	 requestId, err:= exec.Command("uuidgen").Output()
-//      // generate a request bean
-//      request := new(Request)
-//      request.id = requestId
-//      request.name =  name
-//      request.projectName = projectName
-//      requst.description = description
-//      request.expectedMoney = expectedMoney
-//      request.currentMoney = 0
-   
-//      /**
-//      update person data
-//      **/
-//      if person, err := stub.GetState(name); person ==nil {
-//      	person := new(Person)
-//      	pid, err:= exec.Command("uuidgen").Output()
-//      	person.id = pid
-//      	person.name = name;
-//      	stub.PutState(name, person)
-//      }
-
-//      if requestList, err := person.myRequests; requestList == nil {
-//  	 	requestList :=make([]int, 0)
-//  	 }
-//  	 requestList = append(requestList, request.id)
-//  	 person.myRequests = requestList
-
-//      // update allRequest
-//      if requests, err := stub.GetState("allRequest"); err !=nil {
-//      	requests := []*Request{}
-//      }
-//      requests = append(requests, request)
-
-//      stub.PutState(requestId, request)
-//      stub.PutState("allRequest", requests)
-// }
-
 func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
     fmt.Println("query is running " + function)
     // Handle different functions
@@ -254,6 +224,7 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 }
 
 func (t *SimpleChaincode) read(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+    log.Println("Get into read function")
     var key, jsonResp string
     var err error
 
@@ -267,6 +238,11 @@ func (t *SimpleChaincode) read(stub *shim.ChaincodeStub, args []string) ([]byte,
         jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
         return nil, errors.New(jsonResp)
     }
+    if valAsbytes == nil {
+        return []byte("cannot find the key's value of the chaincode"), nil
+    }
+    // var re Request
+    // err = json.Unmarshal(valAsbytes, &re)
 
     return valAsbytes, nil
 }
