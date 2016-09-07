@@ -126,7 +126,7 @@ func (t *SimpleChaincode) createDonation(stub *shim.ChaincodeStub, args []string
      stub.PutState(a, djson)
      
      
-     
+     /*
      var person Person
      var myReqs, myDons []string
      // update person data
@@ -171,6 +171,7 @@ func (t *SimpleChaincode) createDonation(stub *shim.ChaincodeStub, args []string
     }
     donationList = append(donationList, donation.Id)
     request.DonationList = donationList
+    */
     return []byte("create donation has finished"), nil     
 }
 
