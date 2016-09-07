@@ -192,7 +192,7 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
     return nil, errors.New("Received unknown function query")
 }
 
-func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode) read(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
     log.Println("Get into read function")
  
     var key, jsonResp string
