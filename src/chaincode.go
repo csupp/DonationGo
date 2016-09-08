@@ -157,7 +157,8 @@ func (t *SimpleChaincode) createDonation(stub *shim.ChaincodeStub, args []string
         }
         myDonations2 = append(myDonations2, donation.Id)
         person.MyDonations = myDonations2
-        stub.PutState(perkey,perJson)
+        perJson2,err := json.Marshal(&person)
+        stub.PutState(perkey,perJson2)
      } 
        
     //    return nil, errors.New("Person didn't exist in this stub")
