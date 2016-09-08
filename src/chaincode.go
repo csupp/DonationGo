@@ -31,7 +31,7 @@ import (
     "log"
     "github.com/hyperledger/fabric/core/chaincode/shim"
 )
-
+var prefix = "Dn:"
 // SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
 }
@@ -102,7 +102,7 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 
 func (t *SimpleChaincode) createDonation(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
      //args: ["jack", "requestid", money] 
-     var from, toRid string
+     var from, toRid,dId string
      var money int
      var err error
    
@@ -122,22 +122,18 @@ func (t *SimpleChaincode) createDonation(stub *shim.ChaincodeStub, args []string
      if err != nil {
         return nil, err
      }
-     var a = donation.Id
-     stub.PutState(a, djson)
+     dId = prefix+donation.Id
+     stub.PutState(dId, djson)
      
      
      
     // var person Person
      //var myReqs, myDons []string
      // update person data
-     personByte, err := stub.GetState(from)
-     if err == nil {
-        fmt.Println(personByte)
-        return nil, errors.New("Person exist in this stub")
-     } else {
-        return nil, errors.New("Person didn exist in this stub")
-     }
-
+    // personByte, err := stub.GetState(from)
+   //  if personByte == nil {
+ //       return nil, errors.New("Person didn't exist in this stub")
+  //  }
      // if err != nil {
      //    fmt.Println("No person value for " + from)
      //    person = Person{Id: from, Name: from, MyRequests: myReqs, MyDonations: myDons}
@@ -211,5 +207,5 @@ func (t *SimpleChaincode) read(stub *shim.ChaincodeStub, args []string) ([]byte,
         return []byte("cannot find the key's value of the chaincode"), nil
     }
 
-    return []byte(key), nil
+    return valAsbytes, nil
 }
