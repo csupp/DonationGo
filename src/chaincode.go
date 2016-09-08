@@ -31,7 +31,8 @@ import (
     "log"
     "github.com/hyperledger/fabric/core/chaincode/shim"
 )
-var prefix = "Dn:"
+var Dnprefix = "Dn:"
+var Perprefix = "Per:"
 // SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
 }
@@ -122,18 +123,27 @@ func (t *SimpleChaincode) createDonation(stub *shim.ChaincodeStub, args []string
      if err != nil {
         return nil, err
      }
-     dId = prefix+donation.Id
+     dId = Dnprefix+donation.Id
      stub.PutState(dId, djson)
      
      
      
-    // var person Person
-     //var myReqs, myDons []string
-     // update person data
-    // personByte, err := stub.GetState(from)
-   //  if personByte == nil {
- //       return nil, errors.New("Person didn't exist in this stub")
-  //  }
+     var person Person
+     var myReqs, myDons []string
+    //  update person data
+     var perkey = Perprefix+ from
+     personByte, err := stub.GetState(perkey)
+     if personByte == nil {
+        person = Person{Id: from, Name: from, MyRequests: myReqs, MyDonations: myDons}
+        perJson,err := json.marshal(&person)
+        if err !=nil{
+            return nil, errors.New("failed to JSON person instance")	
+        }
+        stub.PutState(perkey,perJson)
+        }
+       
+    //    return nil, errors.New("Person didn't exist in this stub")
+    
      // if err != nil {
      //    fmt.Println("No person value for " + from)
      //    person = Person{Id: from, Name: from, MyRequests: myReqs, MyDonations: myDons}
