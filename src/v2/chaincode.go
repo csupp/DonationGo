@@ -101,6 +101,9 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
      if function == "createDonation" {
         return t.createDonation(stub, args)
      }
+     if function == "createRequest" {
+        return t.createRequest(stub, args)
+     }
      return nil, errors.New("Received unknown function invocation")
 }
 
