@@ -139,7 +139,7 @@ func (t *SimpleChaincode) createDonation(stub *shim.ChaincodeStub, args []string
         if myDonations == nil {
          myDonations = make([]string, 0)
      }
-     myDonations = append(myDonations, donation.Id)
+     myDonations = append(myDonations, "donationid")
      person.MyDonations = myDonations
         perJson,err := json.Marshal(&person)
         if err !=nil{
