@@ -84,7 +84,7 @@ func(t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []
     
     var names = [3]string{"Lucy", "Andy", "David"}
     var MyReqs, MyDons []string
-    for i, v := range names {
+    for _, v := range names {
         var person Person
         person = Person{Id: v, Name: v, MyRequests: MyReqs, MyDonations: MyDons}
         pb, err := json.Marshal(&person)
