@@ -81,17 +81,30 @@ func(t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []
     if err != nil {
         return nil, err
     }
-
-    var request Request
-    var donationLts []string
     
-    request = Request{Id: "requestid", Name: "Donation Go", Description: "Wanna to go to University", ExpectedMoney: 10000, CurrentMoney: 0, DonationList: donationLts}
-    rjson, err := json.Marshal(&request)
-    if err != nil {
-        return nil, err
-    }
-    req := Reqprefix+"requestid"
-    stub.PutState(req, rjson)
+    var names = [3]string{"Lucy", "Andy", "David"}
+    var MyReqs, MyDons []string
+    for i, v := range names {
+        var person Person
+        person = Person{Id: v, Name: v, MyRequests: MyReqs, MyDonations: MyDons}
+        pb, err := json.Marshal(&person)
+        if err != nil {
+            return nil, errors.New("failed to init persons' instance")
+        }
+        preKey := Perprefix + person.Id
+        stub.PutState(preKey, pb)
+    } 
+
+    //var request Request
+    //var donationLts []string
+    
+    //request = Request{Id: "requestid", Name: "Donation Go", Description: "Wanna to go to University", ExpectedMoney: 10000, CurrentMoney: 0, DonationList: donationLts}
+    //rjson, err := json.Marshal(&request)
+    //if err != nil {
+    //    return nil, err
+    //}
+    //req := Reqprefix+"requestid"
+    //stub.PutState(req, rjson)
     log.Println("init function has done!")
     return nil, nil
 }
@@ -191,6 +204,10 @@ func (t *SimpleChaincode) createDonation(stub *shim.ChaincodeStub, args []string
         stub.PutState(toReid,requestJson)
     return nil, nil     
 }
+
+// func (t *SimpleChaincode) createRequest(stub *shim.ChaincodeStub, args []string) ([]byte, error){
+       	
+// }
 
 func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
     log.Println("query is running " + function)
