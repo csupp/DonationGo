@@ -135,7 +135,7 @@ func (t *SimpleChaincode) createDonation(stub *shim.ChaincodeStub, args []string
      personByte, err := stub.GetState(perkey)
      if personByte == nil {
         person = Person{Id: from, Name: from, MyRequests: myReqs, MyDonations: myDons}
-        perJson,err := json.marshal(&person)
+        perJson,err := json.Marshal(&person)
         if err !=nil{
             return nil, errors.New("failed to JSON person instance")	
         }
